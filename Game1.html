@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #grid { display: grid; grid-template-columns: repeat(2, 100px); grid-gap: 5px; }
+    .cell { width: 100px; height: 100px; border: 1px solid black; display: flex; align-items: center; justify-content: center; }
+    .avatar { background-color: lightblue; border-radius: 50%; width: 40px; height: 40px; }
+  </style>
+</head>
+<body>
+
+<div id="grid"></div>
+<p id="event"></p>
+
+<script>
+  const gridSize = 2;
+  const events = { '1,1': 'You found a treasure!' };  // Example event
+  let player = { x: 0, y: 0 };
+
+  function drawGrid() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        if (player.x === x && player.y === y) {
+          const avatar = document.createElement('div');
+          avatar.className = 'avatar';
+          cell.appendChild(avatar);
+        }
+        grid.appendChild(cell);
+      }
+    }
+  }
+
+  function movePlayer(dx, dy) {
+    const newX = player.x + dx;
+    const newY = player.y + dy;
+    if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
+      player.x = newX;
+      player.y = newY;
+      drawGrid();
+      checkEvent();
+    }
+  }
+
+  function checkEvent() {
+    const eventText = events[`${player.x},${player.y}`] || '';
+    document.getElementById('event').textContent = eventText;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp') movePlayer(0, -1);
+    if (e.key === 'ArrowDown') movePlayer(0, 1);
+    if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+    if (e.key === 'ArrowRight') movePlayer(1, 0);
+  });
+
+  drawGrid();
+</script>
+
+</body>
+</html>
